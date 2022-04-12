@@ -107,7 +107,8 @@ RUN cmake -G Ninja \
 #
 FROM ubuntu:20.04
 
-RUN apt-get update \
+RUN sed -i '/deb-src/s/^# //' /etc/apt/sources.list && apt update \
+    && apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         build-essential \
         clang-10 \
@@ -115,9 +116,15 @@ RUN apt-get update \
         libllvm10 \
         zlib1g \
         sudo \
-    && rm -rf /var/lib/apt/lists/* \
+        emacs-nox \
+        less \
+        xxd \
+        wget \
     && useradd -m -s /bin/bash ubuntu \
     && echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y cmake nasm bvi bsdmainutils
+
 
 COPY --from=builder_qsym /symcc_build /symcc_build
 COPY --from=builder_qsym /root/.cargo/bin/symcc_fuzzing_helper /symcc_build/
@@ -133,5 +140,13 @@ ENV SYMCC_LIBCXX_PATH=/libcxx_symcc_install
 
 USER ubuntu
 WORKDIR /home/ubuntu
+
+RUN apt-get source imagemagick
+RUN apt-get source libjpeg-turbo-progs
+
+COPY Makefile /home/ubuntu/
+
+RUN make
+
 COPY sample.cpp /home/ubuntu/
 RUN mkdir /tmp/output
