@@ -152,4 +152,6 @@ COPY Makefile /home/ubuntu/
 RUN make
 
 COPY sample.cpp /home/ubuntu/
+RUN mkdir /home/ubuntu/input
+RUN echo A > /home/ubuntu/input/seed
 RUN mkdir /tmp/output

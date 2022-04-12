@@ -12,3 +12,5 @@ compile_commands.json
 
 # The Dockerfile itself doesn't need to be copied
 Dockerfile
+
+.git
