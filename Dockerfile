@@ -23,6 +23,7 @@ RUN apt-get update \
         cargo \
         clang-10 \
         clang-11 \
+	lld-11 \
         cmake \
         g++ \
         git \
@@ -39,7 +40,7 @@ RUN pip3 install lit
 # Build AFL.
 RUN git clone https://github.com/AFLplusplus/AFLplusplus.git afl \
     && cd afl \
-    && make \
+    && LLVM_CONFIG=llvm-config-11 make \
     && cd custom_mutators/symcc \
     && make
 
@@ -126,8 +127,7 @@ RUN sed -i '/deb-src/s/^# //' /etc/apt/sources.list && apt update \
     && useradd -m -s /bin/bash ubuntu \
     && echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y cmake nasm bvi bsdmainutils python3-pip clang-11
-
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y cmake nasm bvi bsdmainutils python3-pip clang-11 lld-11 nano
 
 COPY --from=builder_qsym /symcc_build /symcc_build
 COPY --from=builder_qsym /root/.cargo/bin/symcc_fuzzing_helper /symcc_build/
