@@ -22,6 +22,7 @@ RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         cargo \
         clang-10 \
+        clang-11 \
         cmake \
         g++ \
         git \
@@ -36,8 +37,10 @@ RUN apt-get update \
 RUN pip3 install lit
 
 # Build AFL.
-RUN git clone -b v2.56b https://github.com/google/AFL.git afl \
+RUN git clone https://github.com/AFLplusplus/AFLplusplus.git afl \
     && cd afl \
+    && make \
+    && cd custom_mutators/symcc \
     && make
 
 # Download the LLVM sources already so that we don't need to get them again when
@@ -123,7 +126,7 @@ RUN sed -i '/deb-src/s/^# //' /etc/apt/sources.list && apt update \
     && useradd -m -s /bin/bash ubuntu \
     && echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y cmake nasm bvi bsdmainutils
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y cmake nasm bvi bsdmainutils python3-pip clang-11
 
 
 COPY --from=builder_qsym /symcc_build /symcc_build
@@ -134,8 +137,8 @@ COPY --from=builder_qsym /afl /afl
 
 ENV PATH /symcc_build:$PATH
 ENV AFL_PATH /afl
-ENV AFL_CC clang-10
-ENV AFL_CXX clang++-10
+ENV AFL_CC clang-11
+ENV AFL_CXX clang++-11
 ENV SYMCC_LIBCXX_PATH=/libcxx_symcc_install
 
 USER ubuntu
