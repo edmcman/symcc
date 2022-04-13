@@ -135,7 +135,7 @@ COPY util/pure_concolic_execution.sh /symcc_build/
 COPY --from=builder_qsym /libcxx_symcc_install /libcxx_symcc_install
 COPY --from=builder_qsym /afl /afl
 
-ENV PATH /symcc_build:$PATH
+ENV PATH /symcc_build:/afl:$PATH
 ENV AFL_PATH /afl
 ENV AFL_CC clang-11
 ENV AFL_CXX clang++-11
