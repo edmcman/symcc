@@ -144,14 +144,14 @@ ENV SYMCC_LIBCXX_PATH=/libcxx_symcc_install
 USER ubuntu
 WORKDIR /home/ubuntu
 
-RUN apt-get source imagemagick
+COPY ImageMagick-5.3.0.tar.gz /home/ubuntu
 RUN apt-get source libjpeg-turbo-progs
 
 COPY Makefile /home/ubuntu/
 
-RUN make
+RUN make || true
 
-COPY sample.cpp /home/ubuntu/
+COPY sample.cpp sample2.cpp /home/ubuntu/
 RUN mkdir /home/ubuntu/input
 RUN echo A > /home/ubuntu/input/seed
 RUN mkdir /tmp/output
