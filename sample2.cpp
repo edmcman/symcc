@@ -6,8 +6,8 @@ int main(int argc, char *argv[]) {
   int x, y;
   std::cout << "Enter two integers" << std::endl;
 
-  read(0, &x, sizeof(x));
-  read(0, &y, sizeof(y));
+  read(0, &x, sizeof(x)); // Read x from input
+  read(0, &y, sizeof(y)); // Read y from input
 
   int z = y / x;
   int computation = (x * x * x * x) * y * z;
